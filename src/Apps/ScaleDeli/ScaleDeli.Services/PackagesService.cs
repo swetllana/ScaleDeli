@@ -10,13 +10,16 @@ namespace ScaleDeli.Services
     public class PackagesService : IPackagesService
     {
         private readonly ScaleDeliDbContext  db;
-        public PackagesService(ScaleDeliDbContext db)
+        private readonly IReceiptsService receiptsService;
+        public PackagesService(ScaleDeliDbContext db, IReceiptsService receiptsService)
         {
             this.db = db;
-
+            this.receiptsService = receiptsService;
         }
 
-        void Create(string description, decimal weight, string shippingAddress, string recipientName)
+       
+
+        public void Create(string description, decimal weight, string shippingAddress, string recipientName)
         {
             var userId = this.db.Users.Where(x => x.Username == recipientName).Select(x=>x.Id).FirstOrDefault();
             if ( userId ==null)
@@ -34,6 +37,31 @@ namespace ScaleDeli.Services
 
             this.db.Packages.Add(package);
             this.db.SaveChanges();
+        }
+
+        public void Deliver(string id)
+        {
+            var package = this.db.Packages.FirstOrDefault(x =>x .Id == id);
+            if ( package ==  null)
+            {
+                return;
+            }
+
+          
+            package.Status = PackageStatus.Delivered;
+            this.db.SaveChanges();
+            this.receiptsService.CreateFromPackage(package.Weight, package.Id, package.RecipientId);
+        }
+
+        /*    void IPackagesService.Create(string description, decimal weight, string shippingAddress, string recipientName)
+            {
+             //   throw new NotImplementedException();
+            }*/
+
+        public IQueryable<Package> GetAllByStatus(PackageStatus status)
+        {
+            var packages = this.db.Packages.Where(x => x.Status == status);
+                return packages;
         }
     }
 }
