@@ -1,6 +1,7 @@
 ﻿using ScaleDeli.Data;
 using ScaleDeli.Data.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,6 +29,12 @@ namespace ScaleDeli.Services
             this.db.Users.Add(user);
             this.db.SaveChanges();
             return user.Id;
+        }
+
+        public IEnumerable<string> GetUserNames()
+        {
+            var usernames  = this.db.Users.Select(x => x.Username).ToList();
+            return usernames;
         }
 
         public User GetUserOrNull(string username, string password)
