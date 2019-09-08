@@ -35,6 +35,7 @@ namespace ScaleDeli.Data.Models
     public enum PackageStatus
     {
         Pending= 1 ,
-        Delivered = 2
+        Shipped = 2,
+        Delivered   =3
     }
 }
