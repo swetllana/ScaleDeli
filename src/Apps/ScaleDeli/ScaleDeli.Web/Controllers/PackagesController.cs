@@ -16,7 +16,7 @@ namespace ScaleDeli.Web.Controllers
     {
         private readonly IPackagesService packagesService;
         private readonly IUsersService usersService;
-        public PackagesController(IPackagesService packagesService,  IUsersService usersService)
+        public PackagesController(IPackagesService packagesService, IUsersService usersService)
         {
             this.packagesService = packagesService;
             this.usersService = usersService;
@@ -39,8 +39,8 @@ namespace ScaleDeli.Web.Controllers
                 return this.Redirect("/Packages/Create");
             }
 
-            this.packagesService.Create(input.Description, input.Weight, input.ShippingAddress,input.RecipientName);
-            return  this.Redirect("/Packages/Pending");
+            this.packagesService.Create(input.Description, input.Weight, input.ShippingAddress, input.RecipientName);
+            return this.Redirect("/Packages/Pending");
         }
 
         [Authorize]
@@ -55,7 +55,7 @@ namespace ScaleDeli.Web.Controllers
                     Weight = x.Weight,
                     RecipientName = x.Recipient.Username
 
-                }).ToList()  ;
+                }).ToList();
             return this.View(new PackageListViewModel { Packages = packages });
         }
 
@@ -72,14 +72,34 @@ namespace ScaleDeli.Web.Controllers
                     RecipientName = x.Recipient.Username
 
                 }).ToList();
-            return this.View(new PackageListViewModel { Packages = packages } );
+            return this.View(new PackageListViewModel { Packages = packages });
         }
 
         [Authorize]
-        public IActionResult Deliver (string id)
+        public IActionResult Deliver(string id)
         {
             packagesService.Deliver(id);
             return this.Redirect("/Packages/Delivered");
         }
+      
+        // [Authorize]
+       
+        public IActionResult Shipped(string id)
+          {
+            var packages = this.packagesService.GetAllByStatus(PackageStatus.Shipped)
+                  .Select(x => new PackageViewModel
+                  {
+                      Description = x.Description,
+                      Id = x.Id,
+                      ShippingAddress = x.ShippingAddress,
+                      Weight = x.Weight,
+                      RecipientName = x.Recipient.Username
+
+                  }).ToList();
+              return this.View(new PackageListViewModel { Packages = packages } );
+      
+
+        }
+          
     }
 }
