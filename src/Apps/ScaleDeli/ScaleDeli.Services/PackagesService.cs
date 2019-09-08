@@ -53,10 +53,7 @@ namespace ScaleDeli.Services
             this.receiptsService.CreateFromPackage(package.Weight, package.Id, package.RecipientId);
         }
 
-        /*    void IPackagesService.Create(string description, decimal weight, string shippingAddress, string recipientName)
-            {
-             //   throw new NotImplementedException();
-            }*/
+      
 
         public IQueryable<Package> GetAllByStatus(PackageStatus status)
         {

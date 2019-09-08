@@ -12,5 +12,6 @@ namespace ScaleDeli.Services
 
         IQueryable<Package> GetAllByStatus(PackageStatus status);
         void Deliver(string id);
+    
     }
 }
